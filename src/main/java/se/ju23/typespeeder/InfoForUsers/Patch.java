@@ -1,5 +1,7 @@
 package se.ju23.typespeeder.InfoForUsers;
 
+import se.ju23.typespeeder.colors.ConsoleColor;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -67,7 +69,7 @@ public class Patch {
         }
     }
     public static String getString(){
-        return "BETA VERSION 1.0.1";
+        return "BETA VERSION 1.0.1 (Newsletter bugs fixed)";
     }
     public String readTextFromFile(String filePath) {
         StringBuilder content = new StringBuilder();
@@ -87,6 +89,6 @@ public class Patch {
     }
     @Override
     public String toString() {
-        return  "Patch: " +  patchVersion + "Published: " + getFormattedPublishDateTime(releaseDateTime) + "\n" ;
+        return ConsoleColor.BOLD + "Patch: " +  patchVersion + "Published: " + getFormattedPublishDateTime(releaseDateTime) + "\n" + ConsoleColor.RESET;
     }
 }

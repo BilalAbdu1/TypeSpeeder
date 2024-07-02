@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se.ju23.typespeeder.classesFromDB.Tasks;
 import se.ju23.typespeeder.classesFromDB.TasksRepo;
+import se.ju23.typespeeder.colors.ConsoleColor;
 import se.ju23.typespeeder.userInterfaces.MenuService;
 
 import java.time.Duration;
@@ -70,11 +71,11 @@ public class Challenge implements IChallenge {
         listOfCurrentGames = tasksList;
         gameListSize = tasksList.size();
         if (gameDifficulty == 1){
-            return  "EASY GAMES" +
-                    "\n0. Go back\n" + "1. ABC\n" + "2. QWERTY\n" + "3. FRIDAY\n" + "4. SIGNS\n" + "5. REVERSE\n" + "Your choice: ";
+            return ConsoleColor.GREEN + "EASY GAMES" + ConsoleColor.RESET + ConsoleColor.CYAN + ConsoleColor.BOLD +
+                    "\n0. Go back\n" + ConsoleColor.RESET + ConsoleColor.CYAN + stringBuilder + ConsoleColor.RESET + "Your choice";
         } else {
-            return "HARD GAMES" +
-                    "\n0. Go back\n" + "1. The farmhouse\n" + "2. The dentist\n" + "3. NATASHA\n" + "4. The football player\n" + "5. The Basketball player\n" + "Your choice";
+            return ConsoleColor.RED + "HARD GAMES" + ConsoleColor.RESET + ConsoleColor.CYAN + ConsoleColor.BOLD +
+                    "\n0. Go back\n" + ConsoleColor.RESET + ConsoleColor.CYAN + stringBuilder + ConsoleColor.RESET + "Your choice: ";
         }
 
     }
@@ -95,8 +96,8 @@ public class Challenge implements IChallenge {
 
     private void findTaskByName() {
         for (int i = 0; i < listOfCurrentGames.size(); i++) {
-           currentGameText = listOfCurrentGames.get(chosenGame - 1).getActualTask();
-           currentGameTaskId = listOfCurrentGames.get(chosenGame - 1).getTaskId();
+            currentGameText = listOfCurrentGames.get(chosenGame - 1).getActualTask();
+            currentGameTaskId = listOfCurrentGames.get(chosenGame - 1).getTaskId();
 
         }
         setCurrentGameTaskId();

@@ -3,14 +3,24 @@ package se.ju23.typespeeder.gameLogic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import se.ju23.typespeeder.InfoForUsers.NewsLetter;
 import se.ju23.typespeeder.classesFromDB.*;
+import se.ju23.typespeeder.colors.ConsoleColor;
 import se.ju23.typespeeder.userInterfaces.MenuService;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.IntStream;
 
 @Component
 public class TypeSpeederGamePlay implements Playable {
@@ -160,23 +170,23 @@ public class TypeSpeederGamePlay implements Playable {
     public String returnChallengeResult(){
         String toReturn;
         if (gameDifficulty == 1){
-            toReturn = "--------\n" +
+            toReturn = ConsoleColor.BLUE + "--------\n" +
                     "| Correct Answers: " + correctAnswers + " |" +
                     "| Your Time: " + getTimeResult() + " Seconds" + " |" + "| Points: " +
                     currentPointsForPrinting + " |" +
-                    "\n--------\n";
+                    "\n--------\n" + ConsoleColor.RESET;
         } else {
-            toReturn = "--------\n" +
+            toReturn = ConsoleColor.BLUE + "--------\n" +
                     "| Correct Answers: " + correctAnswers + " |" +
                     "| Correct Answers in row: " + correctAnswersInRow + " |" +
                     "| Your Time: " + getTimeResult() + " Seconds" + " |" + "| Points: " +
                     currentPointsForPrinting + " |" +
-                    "\n--------\n" ;
+                    "\n--------\n" + ConsoleColor.RESET;
         }
         if (levelUp){
-            return toReturn + "NEW LEVEL!: " + currentLevel + "\n";
+            return toReturn + ConsoleColor.BRIGHT_YELLOW + "NEW LEVEL!: " + currentLevel + ConsoleColor.RESET + "\n";
         } else if (levelLimit){
-            return toReturn + "YOU HAVE REACHED THE HIGHEST LEVEL CONTINUE TO IMPROVE YOUR SCORE!";
+            return toReturn + ConsoleColor.BRIGHT_YELLOW + "YOU HAVE REACHED THE HIGHEST LEVEL CONTINUE TO IMPROVE YOUR SCORE!" + ConsoleColor.RESET;
         }else {
             return toReturn;
         }
@@ -189,11 +199,11 @@ public class TypeSpeederGamePlay implements Playable {
         List<Users> users = usersRepo.findAll();
 
         List<Users> topListOfUsers = new ArrayList<>(users);
-        StringBuilder result = new StringBuilder("    \u001B[1mSCOREBOARD BASED ON LEVEL \n    player                            Level     XP\n");
+        StringBuilder result = new StringBuilder(ConsoleColor.CYAN + "    \u001B[1mSCOREBOARD BASED ON LEVEL \n    player                            Level     XP\n" + ConsoleColor.RESET);
         int pos = 1;
         topListOfUsers.sort((p1,p2) -> Integer.compare(p2.getLevel(), p1.getLevel()));
         for (Users u : topListOfUsers){
-            result.append(String.format("\u001B[1m%5d %-9s%-17s%9.0f%9.0f%n" + pos, u.getAlias(), " (" +  u.getEmail() + ")", (double)u.getLevel(),(double)u.getXp()));
+            result.append(String.format(ConsoleColor.CYAN + "\u001B[1m%5d %-9s%-17s%9.0f%9.0f%n" + ConsoleColor.RESET, pos, u.getAlias(), " (" +  u.getEmail() + ")", (double)u.getLevel(),(double)u.getXp()));
             if (pos++ ==10) break;
         }
 
@@ -215,12 +225,12 @@ public class TypeSpeederGamePlay implements Playable {
             }
         }
         userScores.sort(Comparator.comparingDouble(UserScores::getScore).reversed());
-        StringBuilder result = new StringBuilder("    \u001B[1mSCOREBOARD BASED ON 5 LATEST ACHIEVEMENTS\n SCORE BASED ON:" +
+        StringBuilder result = new StringBuilder(ConsoleColor.BRIGHT_MAGENTA + "    \u001B[1mSCOREBOARD BASED ON 5 LATEST ACHIEVEMENTS\n SCORE BASED ON:" +
                 " SPEED, ACCURACY, ACCURACY IN ORDER " +
-                "\n    player                            Level     XP     Score\n" );
+                "\n    player                            Level     XP     Score\n" + ConsoleColor.RESET);
         int pos = 1;
         for (UserScores userScore : userScores) {
-            result.append(String.format("\u001B[1m%5d %-9s%-17s%9.0f%9.0f%9.0f%n" + pos, userScore.getAlias(), "(" + userScore.getUsername() + ")",
+            result.append(String.format(ConsoleColor.MAGENTA + "\u001B[1m%5d %-9s%-17s%9.0f%9.0f%9.0f%n" + ConsoleColor.RESET, pos, userScore.getAlias(), "(" + userScore.getUsername() + ")",
                     (double)userScore.getLevel(),
                     (double)userScore.getXp(), userScore.getScore()));
             if (pos++ == 10) break;
@@ -403,17 +413,17 @@ public class TypeSpeederGamePlay implements Playable {
     }
     @Override
     public String returnUserInfo(){
-        return "| Alias " + currentAlias[0] + " | Level: " + currentLevel + " | XP: " + currentXp + "/" + getXpLimit() + " Next level: " + (getCurrentLevel()+1) ;
+        return ConsoleColor.BLUE + "| Alias " + currentAlias[0] + " | Level: " + currentLevel + " | XP: " + currentXp + "/" + getXpLimit() + " Next level: " + (getCurrentLevel()+1) + ConsoleColor.RESET;
     }
     @Override
     public String beforeGameStartsText(){
         if (gameDifficulty == 1){
-            return  "This is an easy test, you will gain points for every correct highlighted you type. Maximum time 2 min. " +
-                    "It's \u001B[92mTYPE INSENSITIVE\u001B[0m\nTime starts when you press ENTER, READY SET...(enter)" ;
+            return ConsoleColor.BOLD + "This is an easy test, you will gain points for every correct highlighted you type. Maximum time 2 min. " +
+                    "It's \u001B[92mTYPE INSENSITIVE\u001B[0m\nTime starts when you press ENTER, READY SET...(enter)" + ConsoleColor.RESET;
         } else {
-            return  "You will get a text with highlighted words write them as fast as you can, " +
+            return  ConsoleColor.BOLD + "You will get a text with highlighted words write them as fast as you can, " +
                     "this is a \u001B[92mTYPE SENSITIVE\u001B[0m challenge. You have a limit of 2 minutes to complete the challenge " +
-                    "\nTime starts when you press ENTER, READY...(enter)";
+                    "\nTime starts when you press ENTER, READY...(enter)" + ConsoleColor.RESET;
         }
     }
     @Override
@@ -434,7 +444,7 @@ public class TypeSpeederGamePlay implements Playable {
         }
         return status;
     }
-@Override
+    @Override
     public void setGameDifficulty(int gameDifficulty1) {
         this.gameDifficulty = gameDifficulty1;
     }

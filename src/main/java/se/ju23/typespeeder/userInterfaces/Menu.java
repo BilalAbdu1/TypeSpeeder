@@ -2,6 +2,7 @@ package se.ju23.typespeeder.userInterfaces;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import se.ju23.typespeeder.colors.ConsoleColor;
 import se.ju23.typespeeder.gameLogic.Playable;
 import se.ju23.typespeeder.gameLogic.Translatable;
 
@@ -95,8 +96,8 @@ import java.util.List;
     public String getPasswordChangeText(){
         List<String> menuOptions = new ArrayList<>();
         if (playable.getPassword(1).equals("1")){
-            menuOptions.add( "\u001B[1mPASSWORD CHANGED\n" +
-                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n");
+            menuOptions.add(ConsoleColor.BG_BRIGHT_CYAN + "\u001B[1mPASSWORD CHANGED\n" +
+                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n" + ConsoleColor.RESET);
         } else {
             if (playable.getPassword(1).equals(playable.getPassword(0))){
                 menuOptions.add("New password (Go back 'b'): ");
@@ -117,8 +118,8 @@ import java.util.List;
     public String getUsernameChangeText(){
         List<String> menuOptions = new ArrayList<>();
         if (playable.getCurrentUsername(1).equals("1")){
-            menuOptions.add( "\u001B[1mUSERNAME CHANGED\n" +
-                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n");
+            menuOptions.add(ConsoleColor.CYAN + "\u001B[1mUSERNAME CHANGED\n" +
+                    "YOU HAVE TO SIGN OUT BEFORE CHANGING AGAIN\u001B[0m\n" + ConsoleColor.RESET);
         } else {
             if (playable.getCurrentUsername(1).equals(playable.getCurrentUsername(0))){
                 menuOptions.add("New Username (Go back 'b'): ");
